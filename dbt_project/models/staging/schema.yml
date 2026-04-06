@@ -1,0 +1,55 @@
+version: 2
+
+models:
+  - name: stg_users
+    description: "CRM users"
+    columns:
+      - name: user_id
+        description: "Primary key"
+        tests:
+          - unique
+          - not_null
+      - name: email
+        tests:
+          - not_null
+
+  - name: stg_stages
+    description: "Deal pipeline stages"
+    columns:
+      - name: stage_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_fields
+    description: "CRM field metadata"
+    columns:
+      - name: field_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_deal_changes
+    description: "Historical deal changes"
+    columns:
+      - name: deal_id
+        tests:
+          - not_null
+      - name: change_time
+        tests:
+          - not_null
+
+  - name: stg_activity
+    description: "CRM activities"
+    columns:
+      - name: activity_id
+        tests:
+          - not_null
+
+  - name: stg_activity_types
+    description: "Activity type lookup"
+    columns:
+      - name: activity_type_id
+        tests:
+          - unique
+          - not_null

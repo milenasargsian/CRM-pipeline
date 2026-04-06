@@ -1,0 +1,5 @@
+pandas==2.3.3
+clickhouse-connect
+dbt-core
+dbt-clickhouse
+apache-airflow

@@ -1,0 +1,922 @@
+[0m13:03:25.277190 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017116DE6CF0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000171124BF890>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017115C59D10>]}
+
+
+============================== 13:03:25.287120 | 4860e1a9-67df-4f5c-bd0a-3aeb70c64c79 ==============================
+[0m13:03:25.287120 [info ] [MainThread]: Running with dbt=1.11.7
+[0m13:03:25.288066 [debug] [MainThread]: running dbt with arguments {'version_check': 'True', 'no_print': 'None', 'static_parser': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'printer_width': '80', 'write_json': 'True', 'empty': 'False', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'profiles_dir': 'C:\\MyCodes\\Python\\CRM pipeline\\dbt_project', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'partial_parse': 'True', 'invocation_command': 'dbt build', 'indirect_selection': 'eager', 'use_colors': 'True', 'use_experimental_parser': 'False', 'log_path': 'C:\\MyCodes\\Python\\CRM pipeline\\dbt_project\\logs'}
+[0m13:03:25.847078 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '4860e1a9-67df-4f5c-bd0a-3aeb70c64c79', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000171181C8B00>]}
+[0m13:03:26.033160 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '4860e1a9-67df-4f5c-bd0a-3aeb70c64c79', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017116BD7350>]}
+[0m13:03:26.035223 [info ] [MainThread]: Registered adapter: clickhouse=1.10.0
+[0m13:03:26.526076 [debug] [MainThread]: checksum: b80718358155fc17c3559352095564dd56ada1cc1a1c0ef2e62c857e71583775, vars: {}, profile: , target: , version: 1.11.7
+[0m13:03:26.527833 [info ] [MainThread]: Unable to do partial parsing because saved manifest not found. Starting full parse.
+[0m13:03:26.528432 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'partial_parser', 'label': '4860e1a9-67df-4f5c-bd0a-3aeb70c64c79', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017118E1F250>]}
+[0m13:03:28.009650 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '4860e1a9-67df-4f5c-bd0a-3aeb70c64c79', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017118F6CD70>]}
+[0m13:03:28.085149 [debug] [MainThread]: Wrote artifact WritableManifest to C:\MyCodes\Python\CRM pipeline\dbt_project\target\manifest.json
+[0m13:03:28.087878 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\MyCodes\Python\CRM pipeline\dbt_project\target\semantic_manifest.json
+[0m13:03:28.129747 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '4860e1a9-67df-4f5c-bd0a-3aeb70c64c79', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017119879E10>]}
+[0m13:03:28.130192 [info ] [MainThread]: Found 6 models, 12 data tests, 523 macros
+[0m13:03:28.132305 [info ] [MainThread]: 
+[0m13:03:28.132591 [info ] [MainThread]: Concurrency: 1 threads (target='dev')
+[0m13:03:28.132806 [info ] [MainThread]: 
+[0m13:03:28.133153 [debug] [MainThread]: Acquiring new clickhouse connection 'master'
+[0m13:03:28.140071 [debug] [ThreadPool]: Acquiring new clickhouse connection 'list_'
+[0m13:03:28.147133 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m13:03:29.741852 [debug] [ThreadPool]: dbt_clickhouse adapter: On list_: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "connection_name": "list_"} */
+
+    select name from system.databases
+  ...
+[0m13:03:29.802668 [debug] [ThreadPool]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:29.824981 [debug] [ThreadPool]: Acquiring new clickhouse connection 'list__crm_staging'
+[0m13:03:29.829844 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m13:03:31.231346 [debug] [ThreadPool]: dbt_clickhouse adapter: On list__crm_staging: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "connection_name": "list__crm_staging"} */
+with mv_sources as (
+      -- Find all MVs and their target tables (database and name of the MV, plus the SELECT SQL)
+      select
+        name as mv_name,
+        database as mv_database,
+        any(as_select) as mv_sql,
+        any(replaceRegexpOne(create_table_query, '.*TO\\s+`?([^`\\s(]+)`?\\.`?([^`\\s(]+)`?.*', '\\1.\\2')) as target_fqn
+      
+      from system.tables
+      
+      where engine = 'MaterializedView'
+        and create_table_query like '%TO %'
+      group by mv_name, mv_database
+    )
+    select
+      t.name as name,
+      t.database as schema,
+      multiIf(
+        t.engine = 'MaterializedView', 'materialized_view',
+        t.engine = 'View', 'view',
+        t.engine = 'Dictionary', 'dictionary',
+        'table'
+      ) as type,
+      db.engine as db_engine,
+      groupArrayIf(
+        map('schema', mv_sources.mv_database, 'name', mv_sources.mv_name, 'sql', mv_sources.mv_sql),
+        mv_sources.mv_name != ''
+      ) as mvs_pointing_to_it,0 as is_on_cluster
+        from system.tables as t
+      
+        join system.databases as db on t.database = db.name
+        left join mv_sources on mv_sources.target_fqn = concat(t.database, '.', t.name)
+      where schema = 'crm_staging'
+      group by name, schema, type, db_engine
+
+  ...
+[0m13:03:31.303214 [debug] [ThreadPool]: dbt_clickhouse adapter: SQL status: OK in 0.07 seconds
+[0m13:03:31.310351 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '4860e1a9-67df-4f5c-bd0a-3aeb70c64c79', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017119B88390>]}
+[0m13:03:31.320339 [debug] [Thread-1 (]: Began running node model.crm_dbt.stg_activity
+[0m13:03:31.321140 [info ] [Thread-1 (]: 1 of 18 START sql view model `crm_staging`.`stg_activity` ...................... [RUN]
+[0m13:03:31.321772 [debug] [Thread-1 (]: Acquiring new clickhouse connection 'model.crm_dbt.stg_activity'
+[0m13:03:31.322126 [debug] [Thread-1 (]: Began compiling node model.crm_dbt.stg_activity
+[0m13:03:31.328130 [debug] [Thread-1 (]: Writing injected SQL for node "model.crm_dbt.stg_activity"
+[0m13:03:31.329680 [debug] [Thread-1 (]: Began executing node model.crm_dbt.stg_activity
+[0m13:03:31.339306 [debug] [Thread-1 (]: Relation stg_activity already exists, replacing it
+[0m13:03:31.346441 [debug] [Thread-1 (]: Model mvs to replace ['stg_activity_mv']
+[0m13:03:31.348132 [debug] [Thread-1 (]: Opening a new connection, currently in state init
+[0m13:03:32.725283 [debug] [Thread-1 (]: dbt_clickhouse adapter: On model.crm_dbt.stg_activity: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "model.crm_dbt.stg_activity"} */
+
+    
+    select name
+    from system.tables
+    where engine = 'MaterializedView'
+      and extract(create_table_query, 'TO\\s+([^\\s(]+)') = 'crm_staging.stg_activity'
+  
+  ...
+[0m13:03:32.787150 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:32.805723 [debug] [Thread-1 (]: Writing runtime sql for node "model.crm_dbt.stg_activity"
+[0m13:03:32.807540 [debug] [Thread-1 (]: dbt_clickhouse adapter: On model.crm_dbt.stg_activity: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "model.crm_dbt.stg_activity"} */
+
+
+  create or replace view `crm_staging`.`stg_activity` 
+  
+    
+  
+  
+    
+    
+  as (
+    -- stg_activity.sql
+
+WITH source AS (
+    SELECT activity_id,
+           type,
+           assigned_to_user,
+           deal_id,
+           done,
+           due_to
+    FROM crm.lnd_activity
+)
+
+SELECT source.activity_id                              AS activity_id,
+       trim(source.type)                               AS activity_type,
+       source.assigned_to_user                         AS assigned_to_user_id,
+       source.deal_id                                  AS deal_id,
+       CASE
+           WHEN source.done = 1
+               THEN TRUE
+           ELSE FALSE
+       END                                             AS is_done,
+       CASE
+           WHEN source.due_to = '' OR source.due_to IS NULL
+               THEN NULL
+           ELSE parseDateTimeBestEffort(source.due_to)
+       END                                             AS due_at
+FROM source
+WHERE source.activity_id IS NOT NULL
+
+
+
+
+
+
+
+
+    
+  )
+      
+      
+                    -- end_of_sql
+                    
+                    ...
+[0m13:03:32.935398 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.13 seconds
+[0m13:03:32.958229 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '4860e1a9-67df-4f5c-bd0a-3aeb70c64c79', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017119B95D90>]}
+[0m13:03:32.958813 [info ] [Thread-1 (]: 1 of 18 OK created sql view model `crm_staging`.`stg_activity` ................. [[32mOK[0m in 1.64s]
+[0m13:03:32.959293 [debug] [Thread-1 (]: Finished running node model.crm_dbt.stg_activity
+[0m13:03:32.959616 [debug] [Thread-1 (]: Began running node model.crm_dbt.stg_activity_types
+[0m13:03:32.959938 [info ] [Thread-1 (]: 2 of 18 START sql view model `crm_staging`.`stg_activity_types` ................ [RUN]
+[0m13:03:32.960449 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly model.crm_dbt.stg_activity, now model.crm_dbt.stg_activity_types)
+[0m13:03:32.960734 [debug] [Thread-1 (]: Began compiling node model.crm_dbt.stg_activity_types
+[0m13:03:32.961980 [debug] [Thread-1 (]: Writing injected SQL for node "model.crm_dbt.stg_activity_types"
+[0m13:03:32.962996 [debug] [Thread-1 (]: Began executing node model.crm_dbt.stg_activity_types
+[0m13:03:32.966720 [debug] [Thread-1 (]: Relation stg_activity_types already exists, replacing it
+[0m13:03:32.967124 [debug] [Thread-1 (]: Model mvs to replace ['stg_activity_types_mv']
+[0m13:03:32.967583 [debug] [Thread-1 (]: dbt_clickhouse adapter: On model.crm_dbt.stg_activity_types: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "model.crm_dbt.stg_activity_types"} */
+
+    
+    select name
+    from system.tables
+    where engine = 'MaterializedView'
+      and extract(create_table_query, 'TO\\s+([^\\s(]+)') = 'crm_staging.stg_activity_types'
+  
+  ...
+[0m13:03:33.027878 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:33.032256 [debug] [Thread-1 (]: Writing runtime sql for node "model.crm_dbt.stg_activity_types"
+[0m13:03:33.034517 [debug] [Thread-1 (]: dbt_clickhouse adapter: On model.crm_dbt.stg_activity_types: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "model.crm_dbt.stg_activity_types"} */
+
+
+  create or replace view `crm_staging`.`stg_activity_types` 
+  
+    
+  
+  
+    
+    
+  as (
+    -- stg_activity_types.sql
+
+WITH source AS (
+    SELECT id,
+           name,
+           active,
+           type
+    FROM crm.lnd_activity_types
+)
+
+SELECT source.id                                       AS activity_type_id,
+       trim(source.name)                               AS activity_type_name,
+       CASE
+           WHEN lower(trim(source.active)) = 'yes'
+               THEN TRUE
+           ELSE FALSE
+       END                                             AS is_active,
+       trim(lower(source.type))                        AS type_key
+FROM source
+WHERE source.id IS NOT NULL
+    
+  )
+      
+      
+                    -- end_of_sql
+                    
+                    ...
+[0m13:03:33.161692 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.13 seconds
+[0m13:03:33.165218 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '4860e1a9-67df-4f5c-bd0a-3aeb70c64c79', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017119AC7C20>]}
+[0m13:03:33.165768 [info ] [Thread-1 (]: 2 of 18 OK created sql view model `crm_staging`.`stg_activity_types` ........... [[32mOK[0m in 0.20s]
+[0m13:03:33.166250 [debug] [Thread-1 (]: Finished running node model.crm_dbt.stg_activity_types
+[0m13:03:33.166545 [debug] [Thread-1 (]: Began running node model.crm_dbt.stg_deal_changes
+[0m13:03:33.166912 [info ] [Thread-1 (]: 3 of 18 START sql view model `crm_staging`.`stg_deal_changes` .................. [RUN]
+[0m13:03:33.167304 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly model.crm_dbt.stg_activity_types, now model.crm_dbt.stg_deal_changes)
+[0m13:03:33.167615 [debug] [Thread-1 (]: Began compiling node model.crm_dbt.stg_deal_changes
+[0m13:03:33.169026 [debug] [Thread-1 (]: Writing injected SQL for node "model.crm_dbt.stg_deal_changes"
+[0m13:03:33.170654 [debug] [Thread-1 (]: Began executing node model.crm_dbt.stg_deal_changes
+[0m13:03:33.172473 [debug] [Thread-1 (]: Relation stg_deal_changes already exists, replacing it
+[0m13:03:33.172795 [debug] [Thread-1 (]: Model mvs to replace ['stg_deal_changes_mv']
+[0m13:03:33.173131 [debug] [Thread-1 (]: dbt_clickhouse adapter: On model.crm_dbt.stg_deal_changes: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "model.crm_dbt.stg_deal_changes"} */
+
+    
+    select name
+    from system.tables
+    where engine = 'MaterializedView'
+      and extract(create_table_query, 'TO\\s+([^\\s(]+)') = 'crm_staging.stg_deal_changes'
+  
+  ...
+[0m13:03:33.234440 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:33.238774 [debug] [Thread-1 (]: Writing runtime sql for node "model.crm_dbt.stg_deal_changes"
+[0m13:03:33.241443 [debug] [Thread-1 (]: dbt_clickhouse adapter: On model.crm_dbt.stg_deal_changes: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "model.crm_dbt.stg_deal_changes"} */
+
+
+  create or replace view `crm_staging`.`stg_deal_changes` 
+  
+    
+  
+  
+    
+    
+  as (
+    -- stg_deal_changes.sql
+
+WITH source AS (
+    SELECT deal_id,
+           change_time,
+           changed_field_key,
+           new_value
+    FROM crm.lnd_deal_changes
+),
+
+cleaned AS (
+    SELECT deal_id                                 AS deal_id,
+           CASE
+               WHEN change_time = '' OR change_time IS NULL
+                   THEN NULL
+               ELSE parseDateTimeBestEffort(change_time)
+           END                                     AS change_time,
+           trim(changed_field_key)                 AS changed_field_key,
+           trim(new_value)                         AS new_value
+    FROM source
+    WHERE deal_id IS NOT NULL
+)
+
+SELECT deal_id,
+       change_time,
+       changed_field_key,
+       new_value
+FROM cleaned
+    
+  )
+      
+      
+                    -- end_of_sql
+                    
+                    ...
+[0m13:03:33.378276 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.14 seconds
+[0m13:03:33.382618 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '4860e1a9-67df-4f5c-bd0a-3aeb70c64c79', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001711B0816D0>]}
+[0m13:03:33.383739 [info ] [Thread-1 (]: 3 of 18 OK created sql view model `crm_staging`.`stg_deal_changes` ............. [[32mOK[0m in 0.22s]
+[0m13:03:33.384570 [debug] [Thread-1 (]: Finished running node model.crm_dbt.stg_deal_changes
+[0m13:03:33.385007 [debug] [Thread-1 (]: Began running node model.crm_dbt.stg_fields
+[0m13:03:33.385908 [info ] [Thread-1 (]: 4 of 18 START sql view model `crm_staging`.`stg_fields` ........................ [RUN]
+[0m13:03:33.386458 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly model.crm_dbt.stg_deal_changes, now model.crm_dbt.stg_fields)
+[0m13:03:33.386855 [debug] [Thread-1 (]: Began compiling node model.crm_dbt.stg_fields
+[0m13:03:33.388245 [debug] [Thread-1 (]: Writing injected SQL for node "model.crm_dbt.stg_fields"
+[0m13:03:33.389179 [debug] [Thread-1 (]: Began executing node model.crm_dbt.stg_fields
+[0m13:03:33.390902 [debug] [Thread-1 (]: Relation stg_fields already exists, replacing it
+[0m13:03:33.391214 [debug] [Thread-1 (]: Model mvs to replace ['stg_fields_mv']
+[0m13:03:33.391549 [debug] [Thread-1 (]: dbt_clickhouse adapter: On model.crm_dbt.stg_fields: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "model.crm_dbt.stg_fields"} */
+
+    
+    select name
+    from system.tables
+    where engine = 'MaterializedView'
+      and extract(create_table_query, 'TO\\s+([^\\s(]+)') = 'crm_staging.stg_fields'
+  
+  ...
+[0m13:03:33.452536 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:33.457075 [debug] [Thread-1 (]: Writing runtime sql for node "model.crm_dbt.stg_fields"
+[0m13:03:33.459218 [debug] [Thread-1 (]: dbt_clickhouse adapter: On model.crm_dbt.stg_fields: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "model.crm_dbt.stg_fields"} */
+
+
+  create or replace view `crm_staging`.`stg_fields` 
+  
+    
+  
+  
+    
+    
+  as (
+    -- stg_fields.sql
+
+WITH source AS (
+    SELECT id,
+           field_key,
+           name,
+           field_value_options
+    FROM crm.lnd_fields
+),
+
+cleaned AS (
+    SELECT id                          AS field_id,
+           trim(lower(field_key))      AS field_key,
+           trim(name)                  AS field_name,
+           field_value_options         AS field_value_options
+    FROM source
+    WHERE id IS NOT NULL
+)
+
+
+SELECT field_id,
+       field_key,
+       field_name,
+       field_value_options
+FROM cleaned
+    
+  )
+      
+      
+                    -- end_of_sql
+                    
+                    ...
+[0m13:03:33.585595 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.13 seconds
+[0m13:03:33.589972 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '4860e1a9-67df-4f5c-bd0a-3aeb70c64c79', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017119E979D0>]}
+[0m13:03:33.590626 [info ] [Thread-1 (]: 4 of 18 OK created sql view model `crm_staging`.`stg_fields` ................... [[32mOK[0m in 0.20s]
+[0m13:03:33.591174 [debug] [Thread-1 (]: Finished running node model.crm_dbt.stg_fields
+[0m13:03:33.591483 [debug] [Thread-1 (]: Began running node model.crm_dbt.stg_stages
+[0m13:03:33.591879 [info ] [Thread-1 (]: 5 of 18 START sql view model `crm_staging`.`stg_stages` ........................ [RUN]
+[0m13:03:33.592288 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly model.crm_dbt.stg_fields, now model.crm_dbt.stg_stages)
+[0m13:03:33.592931 [debug] [Thread-1 (]: Began compiling node model.crm_dbt.stg_stages
+[0m13:03:33.594533 [debug] [Thread-1 (]: Writing injected SQL for node "model.crm_dbt.stg_stages"
+[0m13:03:33.595767 [debug] [Thread-1 (]: Began executing node model.crm_dbt.stg_stages
+[0m13:03:33.597625 [debug] [Thread-1 (]: Relation stg_stages already exists, replacing it
+[0m13:03:33.597950 [debug] [Thread-1 (]: Model mvs to replace ['stg_stages_mv']
+[0m13:03:33.598280 [debug] [Thread-1 (]: dbt_clickhouse adapter: On model.crm_dbt.stg_stages: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "model.crm_dbt.stg_stages"} */
+
+    
+    select name
+    from system.tables
+    where engine = 'MaterializedView'
+      and extract(create_table_query, 'TO\\s+([^\\s(]+)') = 'crm_staging.stg_stages'
+  
+  ...
+[0m13:03:33.658385 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:33.662793 [debug] [Thread-1 (]: Writing runtime sql for node "model.crm_dbt.stg_stages"
+[0m13:03:33.664503 [debug] [Thread-1 (]: dbt_clickhouse adapter: On model.crm_dbt.stg_stages: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "model.crm_dbt.stg_stages"} */
+
+
+  create or replace view `crm_staging`.`stg_stages` 
+  
+    
+  
+  
+    
+    
+  as (
+    -- stg_stages.sql
+
+WITH source AS (
+    SELECT stage_id,
+           stage_name
+    FROM crm.lnd_stages
+),
+
+cleaned AS (
+    SELECT stage_id            AS stage_id,
+           trim(stage_name)    AS stage_name
+    FROM source
+    WHERE stage_id IS NOT NULL
+)
+
+
+SELECT stage_id,
+       stage_name
+FROM cleaned
+    
+  )
+      
+      
+                    -- end_of_sql
+                    
+                    ...
+[0m13:03:33.792834 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.13 seconds
+[0m13:03:33.797383 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '4860e1a9-67df-4f5c-bd0a-3aeb70c64c79', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017119FB1CC0>]}
+[0m13:03:33.798880 [info ] [Thread-1 (]: 5 of 18 OK created sql view model `crm_staging`.`stg_stages` ................... [[32mOK[0m in 0.20s]
+[0m13:03:33.800585 [debug] [Thread-1 (]: Finished running node model.crm_dbt.stg_stages
+[0m13:03:33.801144 [debug] [Thread-1 (]: Began running node model.crm_dbt.stg_users
+[0m13:03:33.801787 [info ] [Thread-1 (]: 6 of 18 START sql view model `crm_staging`.`stg_users` ......................... [RUN]
+[0m13:03:33.802438 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly model.crm_dbt.stg_stages, now model.crm_dbt.stg_users)
+[0m13:03:33.803261 [debug] [Thread-1 (]: Began compiling node model.crm_dbt.stg_users
+[0m13:03:33.806057 [debug] [Thread-1 (]: Writing injected SQL for node "model.crm_dbt.stg_users"
+[0m13:03:33.807762 [debug] [Thread-1 (]: Began executing node model.crm_dbt.stg_users
+[0m13:03:33.811263 [debug] [Thread-1 (]: Relation stg_users already exists, replacing it
+[0m13:03:33.812308 [debug] [Thread-1 (]: Model mvs to replace ['stg_users_mv']
+[0m13:03:33.813037 [debug] [Thread-1 (]: dbt_clickhouse adapter: On model.crm_dbt.stg_users: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "model.crm_dbt.stg_users"} */
+
+    
+    select name
+    from system.tables
+    where engine = 'MaterializedView'
+      and extract(create_table_query, 'TO\\s+([^\\s(]+)') = 'crm_staging.stg_users'
+  
+  ...
+[0m13:03:33.971416 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.16 seconds
+[0m13:03:33.976112 [debug] [Thread-1 (]: Writing runtime sql for node "model.crm_dbt.stg_users"
+[0m13:03:33.978117 [debug] [Thread-1 (]: dbt_clickhouse adapter: On model.crm_dbt.stg_users: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "model.crm_dbt.stg_users"} */
+
+
+  create or replace view `crm_staging`.`stg_users` 
+  
+    
+  
+  
+    
+    
+  as (
+    -- stg_users.sql
+
+WITH source AS (
+    SELECT id,
+           name,
+           email,
+           modified
+    FROM crm.lnd_users
+),
+
+cleaned AS (
+    SELECT id                                    AS user_id,
+           trim(name)                            AS full_name,
+           lower(trim(email))                    AS email,
+           parseDateTimeBestEffort(modified)     AS modified_at
+    FROM source
+    WHERE id IS NOT NULL
+)
+
+
+SELECT user_id,
+       full_name,
+       email,
+       modified_at
+FROM cleaned
+    
+  )
+      
+      
+                    -- end_of_sql
+                    
+                    ...
+[0m13:03:34.112734 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.13 seconds
+[0m13:03:34.116359 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '4860e1a9-67df-4f5c-bd0a-3aeb70c64c79', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000017119F9D1F0>]}
+[0m13:03:34.116908 [info ] [Thread-1 (]: 6 of 18 OK created sql view model `crm_staging`.`stg_users` .................... [[32mOK[0m in 0.31s]
+[0m13:03:34.117358 [debug] [Thread-1 (]: Finished running node model.crm_dbt.stg_users
+[0m13:03:34.117617 [debug] [Thread-1 (]: Began running node test.crm_dbt.not_null_stg_activity_activity_id.a68836e3e5
+[0m13:03:34.117866 [info ] [Thread-1 (]: 7 of 18 START test not_null_stg_activity_activity_id ........................... [RUN]
+[0m13:03:34.118285 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly model.crm_dbt.stg_users, now test.crm_dbt.not_null_stg_activity_activity_id.a68836e3e5)
+[0m13:03:34.118547 [debug] [Thread-1 (]: Began compiling node test.crm_dbt.not_null_stg_activity_activity_id.a68836e3e5
+[0m13:03:34.127946 [debug] [Thread-1 (]: Writing injected SQL for node "test.crm_dbt.not_null_stg_activity_activity_id.a68836e3e5"
+[0m13:03:34.129303 [debug] [Thread-1 (]: Began executing node test.crm_dbt.not_null_stg_activity_activity_id.a68836e3e5
+[0m13:03:34.141783 [debug] [Thread-1 (]: Writing runtime sql for node "test.crm_dbt.not_null_stg_activity_activity_id.a68836e3e5"
+[0m13:03:34.142959 [debug] [Thread-1 (]: dbt_clickhouse adapter: On test.crm_dbt.not_null_stg_activity_activity_id.a68836e3e5: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "test.crm_dbt.not_null_stg_activity_activity_id.a68836e3e5"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select activity_id
+from `crm_staging`.`stg_activity`
+where activity_id is null
+
+
+
+  
+  
+    ) dbt_internal_test...
+[0m13:03:34.205643 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:34.211347 [info ] [Thread-1 (]: 7 of 18 PASS not_null_stg_activity_activity_id ................................. [[32mPASS[0m in 0.09s]
+[0m13:03:34.211837 [debug] [Thread-1 (]: Finished running node test.crm_dbt.not_null_stg_activity_activity_id.a68836e3e5
+[0m13:03:34.212120 [debug] [Thread-1 (]: Began running node test.crm_dbt.not_null_stg_activity_types_activity_type_id.10b3776169
+[0m13:03:34.212373 [info ] [Thread-1 (]: 8 of 18 START test not_null_stg_activity_types_activity_type_id ................ [RUN]
+[0m13:03:34.212860 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.crm_dbt.not_null_stg_activity_activity_id.a68836e3e5, now test.crm_dbt.not_null_stg_activity_types_activity_type_id.10b3776169)
+[0m13:03:34.213125 [debug] [Thread-1 (]: Began compiling node test.crm_dbt.not_null_stg_activity_types_activity_type_id.10b3776169
+[0m13:03:34.215988 [debug] [Thread-1 (]: Writing injected SQL for node "test.crm_dbt.not_null_stg_activity_types_activity_type_id.10b3776169"
+[0m13:03:34.216868 [debug] [Thread-1 (]: Began executing node test.crm_dbt.not_null_stg_activity_types_activity_type_id.10b3776169
+[0m13:03:34.218747 [debug] [Thread-1 (]: Writing runtime sql for node "test.crm_dbt.not_null_stg_activity_types_activity_type_id.10b3776169"
+[0m13:03:34.219639 [debug] [Thread-1 (]: dbt_clickhouse adapter: On test.crm_dbt.not_null_stg_activity_types_activity_type_id.10b3776169: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "test.crm_dbt.not_null_stg_activity_types_activity_type_id.10b3776169"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select activity_type_id
+from `crm_staging`.`stg_activity_types`
+where activity_type_id is null
+
+
+
+  
+  
+    ) dbt_internal_test...
+[0m13:03:34.282160 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:34.286101 [info ] [Thread-1 (]: 8 of 18 PASS not_null_stg_activity_types_activity_type_id ...................... [[32mPASS[0m in 0.07s]
+[0m13:03:34.287606 [debug] [Thread-1 (]: Finished running node test.crm_dbt.not_null_stg_activity_types_activity_type_id.10b3776169
+[0m13:03:34.288332 [debug] [Thread-1 (]: Began running node test.crm_dbt.unique_stg_activity_types_activity_type_id.065efcc0bd
+[0m13:03:34.288879 [info ] [Thread-1 (]: 9 of 18 START test unique_stg_activity_types_activity_type_id .................. [RUN]
+[0m13:03:34.289708 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.crm_dbt.not_null_stg_activity_types_activity_type_id.10b3776169, now test.crm_dbt.unique_stg_activity_types_activity_type_id.065efcc0bd)
+[0m13:03:34.290313 [debug] [Thread-1 (]: Began compiling node test.crm_dbt.unique_stg_activity_types_activity_type_id.065efcc0bd
+[0m13:03:34.295808 [debug] [Thread-1 (]: Writing injected SQL for node "test.crm_dbt.unique_stg_activity_types_activity_type_id.065efcc0bd"
+[0m13:03:34.297427 [debug] [Thread-1 (]: Began executing node test.crm_dbt.unique_stg_activity_types_activity_type_id.065efcc0bd
+[0m13:03:34.299181 [debug] [Thread-1 (]: Writing runtime sql for node "test.crm_dbt.unique_stg_activity_types_activity_type_id.065efcc0bd"
+[0m13:03:34.300078 [debug] [Thread-1 (]: dbt_clickhouse adapter: On test.crm_dbt.unique_stg_activity_types_activity_type_id.065efcc0bd: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "test.crm_dbt.unique_stg_activity_types_activity_type_id.065efcc0bd"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+select
+    activity_type_id as unique_field,
+    count(*) as n_records
+
+from `crm_staging`.`stg_activity_types`
+where activity_type_id is not null
+group by activity_type_id
+having count(*) > 1
+
+
+
+  
+  
+    ) dbt_internal_test...
+[0m13:03:34.364465 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:34.366356 [info ] [Thread-1 (]: 9 of 18 PASS unique_stg_activity_types_activity_type_id ........................ [[32mPASS[0m in 0.08s]
+[0m13:03:34.366929 [debug] [Thread-1 (]: Finished running node test.crm_dbt.unique_stg_activity_types_activity_type_id.065efcc0bd
+[0m13:03:34.367264 [debug] [Thread-1 (]: Began running node test.crm_dbt.not_null_stg_deal_changes_change_time.d739b89f9d
+[0m13:03:34.367527 [info ] [Thread-1 (]: 10 of 18 START test not_null_stg_deal_changes_change_time ...................... [RUN]
+[0m13:03:34.368100 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.crm_dbt.unique_stg_activity_types_activity_type_id.065efcc0bd, now test.crm_dbt.not_null_stg_deal_changes_change_time.d739b89f9d)
+[0m13:03:34.368390 [debug] [Thread-1 (]: Began compiling node test.crm_dbt.not_null_stg_deal_changes_change_time.d739b89f9d
+[0m13:03:34.372031 [debug] [Thread-1 (]: Writing injected SQL for node "test.crm_dbt.not_null_stg_deal_changes_change_time.d739b89f9d"
+[0m13:03:34.373282 [debug] [Thread-1 (]: Began executing node test.crm_dbt.not_null_stg_deal_changes_change_time.d739b89f9d
+[0m13:03:34.376212 [debug] [Thread-1 (]: Writing runtime sql for node "test.crm_dbt.not_null_stg_deal_changes_change_time.d739b89f9d"
+[0m13:03:34.378580 [debug] [Thread-1 (]: dbt_clickhouse adapter: On test.crm_dbt.not_null_stg_deal_changes_change_time.d739b89f9d: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "test.crm_dbt.not_null_stg_deal_changes_change_time.d739b89f9d"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select change_time
+from `crm_staging`.`stg_deal_changes`
+where change_time is null
+
+
+
+  
+  
+    ) dbt_internal_test...
+[0m13:03:34.444662 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.07 seconds
+[0m13:03:34.448135 [info ] [Thread-1 (]: 10 of 18 PASS not_null_stg_deal_changes_change_time ............................ [[32mPASS[0m in 0.08s]
+[0m13:03:34.449156 [debug] [Thread-1 (]: Finished running node test.crm_dbt.not_null_stg_deal_changes_change_time.d739b89f9d
+[0m13:03:34.449787 [debug] [Thread-1 (]: Began running node test.crm_dbt.not_null_stg_deal_changes_deal_id.32d7e9b75e
+[0m13:03:34.450396 [info ] [Thread-1 (]: 11 of 18 START test not_null_stg_deal_changes_deal_id .......................... [RUN]
+[0m13:03:34.450897 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.crm_dbt.not_null_stg_deal_changes_change_time.d739b89f9d, now test.crm_dbt.not_null_stg_deal_changes_deal_id.32d7e9b75e)
+[0m13:03:34.451257 [debug] [Thread-1 (]: Began compiling node test.crm_dbt.not_null_stg_deal_changes_deal_id.32d7e9b75e
+[0m13:03:34.454924 [debug] [Thread-1 (]: Writing injected SQL for node "test.crm_dbt.not_null_stg_deal_changes_deal_id.32d7e9b75e"
+[0m13:03:34.455882 [debug] [Thread-1 (]: Began executing node test.crm_dbt.not_null_stg_deal_changes_deal_id.32d7e9b75e
+[0m13:03:34.457360 [debug] [Thread-1 (]: Writing runtime sql for node "test.crm_dbt.not_null_stg_deal_changes_deal_id.32d7e9b75e"
+[0m13:03:34.458151 [debug] [Thread-1 (]: dbt_clickhouse adapter: On test.crm_dbt.not_null_stg_deal_changes_deal_id.32d7e9b75e: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "test.crm_dbt.not_null_stg_deal_changes_deal_id.32d7e9b75e"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select deal_id
+from `crm_staging`.`stg_deal_changes`
+where deal_id is null
+
+
+
+  
+  
+    ) dbt_internal_test...
+[0m13:03:34.520632 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:34.524546 [info ] [Thread-1 (]: 11 of 18 PASS not_null_stg_deal_changes_deal_id ................................ [[32mPASS[0m in 0.07s]
+[0m13:03:34.525988 [debug] [Thread-1 (]: Finished running node test.crm_dbt.not_null_stg_deal_changes_deal_id.32d7e9b75e
+[0m13:03:34.526539 [debug] [Thread-1 (]: Began running node test.crm_dbt.not_null_stg_fields_field_id.84b07fccf5
+[0m13:03:34.527197 [info ] [Thread-1 (]: 12 of 18 START test not_null_stg_fields_field_id ............................... [RUN]
+[0m13:03:34.527850 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.crm_dbt.not_null_stg_deal_changes_deal_id.32d7e9b75e, now test.crm_dbt.not_null_stg_fields_field_id.84b07fccf5)
+[0m13:03:34.528342 [debug] [Thread-1 (]: Began compiling node test.crm_dbt.not_null_stg_fields_field_id.84b07fccf5
+[0m13:03:34.532187 [debug] [Thread-1 (]: Writing injected SQL for node "test.crm_dbt.not_null_stg_fields_field_id.84b07fccf5"
+[0m13:03:34.533068 [debug] [Thread-1 (]: Began executing node test.crm_dbt.not_null_stg_fields_field_id.84b07fccf5
+[0m13:03:34.534506 [debug] [Thread-1 (]: Writing runtime sql for node "test.crm_dbt.not_null_stg_fields_field_id.84b07fccf5"
+[0m13:03:34.535400 [debug] [Thread-1 (]: dbt_clickhouse adapter: On test.crm_dbt.not_null_stg_fields_field_id.84b07fccf5: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "test.crm_dbt.not_null_stg_fields_field_id.84b07fccf5"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select field_id
+from `crm_staging`.`stg_fields`
+where field_id is null
+
+
+
+  
+  
+    ) dbt_internal_test...
+[0m13:03:34.597517 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:34.599443 [info ] [Thread-1 (]: 12 of 18 PASS not_null_stg_fields_field_id ..................................... [[32mPASS[0m in 0.07s]
+[0m13:03:34.600072 [debug] [Thread-1 (]: Finished running node test.crm_dbt.not_null_stg_fields_field_id.84b07fccf5
+[0m13:03:34.600423 [debug] [Thread-1 (]: Began running node test.crm_dbt.unique_stg_fields_field_id.c8559e3199
+[0m13:03:34.600834 [info ] [Thread-1 (]: 13 of 18 START test unique_stg_fields_field_id ................................. [RUN]
+[0m13:03:34.601236 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.crm_dbt.not_null_stg_fields_field_id.84b07fccf5, now test.crm_dbt.unique_stg_fields_field_id.c8559e3199)
+[0m13:03:34.601568 [debug] [Thread-1 (]: Began compiling node test.crm_dbt.unique_stg_fields_field_id.c8559e3199
+[0m13:03:34.606090 [debug] [Thread-1 (]: Writing injected SQL for node "test.crm_dbt.unique_stg_fields_field_id.c8559e3199"
+[0m13:03:34.607419 [debug] [Thread-1 (]: Began executing node test.crm_dbt.unique_stg_fields_field_id.c8559e3199
+[0m13:03:34.609479 [debug] [Thread-1 (]: Writing runtime sql for node "test.crm_dbt.unique_stg_fields_field_id.c8559e3199"
+[0m13:03:34.611582 [debug] [Thread-1 (]: dbt_clickhouse adapter: On test.crm_dbt.unique_stg_fields_field_id.c8559e3199: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "test.crm_dbt.unique_stg_fields_field_id.c8559e3199"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+select
+    field_id as unique_field,
+    count(*) as n_records
+
+from `crm_staging`.`stg_fields`
+where field_id is not null
+group by field_id
+having count(*) > 1
+
+
+
+  
+  
+    ) dbt_internal_test...
+[0m13:03:34.673171 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:34.675129 [info ] [Thread-1 (]: 13 of 18 PASS unique_stg_fields_field_id ....................................... [[32mPASS[0m in 0.07s]
+[0m13:03:34.675735 [debug] [Thread-1 (]: Finished running node test.crm_dbt.unique_stg_fields_field_id.c8559e3199
+[0m13:03:34.676139 [debug] [Thread-1 (]: Began running node test.crm_dbt.not_null_stg_stages_stage_id.6a7c0c8378
+[0m13:03:34.676424 [info ] [Thread-1 (]: 14 of 18 START test not_null_stg_stages_stage_id ............................... [RUN]
+[0m13:03:34.676828 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.crm_dbt.unique_stg_fields_field_id.c8559e3199, now test.crm_dbt.not_null_stg_stages_stage_id.6a7c0c8378)
+[0m13:03:34.677090 [debug] [Thread-1 (]: Began compiling node test.crm_dbt.not_null_stg_stages_stage_id.6a7c0c8378
+[0m13:03:34.680055 [debug] [Thread-1 (]: Writing injected SQL for node "test.crm_dbt.not_null_stg_stages_stage_id.6a7c0c8378"
+[0m13:03:34.680933 [debug] [Thread-1 (]: Began executing node test.crm_dbt.not_null_stg_stages_stage_id.6a7c0c8378
+[0m13:03:34.682679 [debug] [Thread-1 (]: Writing runtime sql for node "test.crm_dbt.not_null_stg_stages_stage_id.6a7c0c8378"
+[0m13:03:34.683501 [debug] [Thread-1 (]: dbt_clickhouse adapter: On test.crm_dbt.not_null_stg_stages_stage_id.6a7c0c8378: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "test.crm_dbt.not_null_stg_stages_stage_id.6a7c0c8378"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select stage_id
+from `crm_staging`.`stg_stages`
+where stage_id is null
+
+
+
+  
+  
+    ) dbt_internal_test...
+[0m13:03:34.744573 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:34.746662 [info ] [Thread-1 (]: 14 of 18 PASS not_null_stg_stages_stage_id ..................................... [[32mPASS[0m in 0.07s]
+[0m13:03:34.747416 [debug] [Thread-1 (]: Finished running node test.crm_dbt.not_null_stg_stages_stage_id.6a7c0c8378
+[0m13:03:34.747949 [debug] [Thread-1 (]: Began running node test.crm_dbt.unique_stg_stages_stage_id.7d330989f3
+[0m13:03:34.748463 [info ] [Thread-1 (]: 15 of 18 START test unique_stg_stages_stage_id ................................. [RUN]
+[0m13:03:34.749299 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.crm_dbt.not_null_stg_stages_stage_id.6a7c0c8378, now test.crm_dbt.unique_stg_stages_stage_id.7d330989f3)
+[0m13:03:34.749865 [debug] [Thread-1 (]: Began compiling node test.crm_dbt.unique_stg_stages_stage_id.7d330989f3
+[0m13:03:34.753243 [debug] [Thread-1 (]: Writing injected SQL for node "test.crm_dbt.unique_stg_stages_stage_id.7d330989f3"
+[0m13:03:34.754306 [debug] [Thread-1 (]: Began executing node test.crm_dbt.unique_stg_stages_stage_id.7d330989f3
+[0m13:03:34.757206 [debug] [Thread-1 (]: Writing runtime sql for node "test.crm_dbt.unique_stg_stages_stage_id.7d330989f3"
+[0m13:03:34.758043 [debug] [Thread-1 (]: dbt_clickhouse adapter: On test.crm_dbt.unique_stg_stages_stage_id.7d330989f3: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "test.crm_dbt.unique_stg_stages_stage_id.7d330989f3"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+select
+    stage_id as unique_field,
+    count(*) as n_records
+
+from `crm_staging`.`stg_stages`
+where stage_id is not null
+group by stage_id
+having count(*) > 1
+
+
+
+  
+  
+    ) dbt_internal_test...
+[0m13:03:34.820949 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:34.822703 [info ] [Thread-1 (]: 15 of 18 PASS unique_stg_stages_stage_id ....................................... [[32mPASS[0m in 0.07s]
+[0m13:03:34.823220 [debug] [Thread-1 (]: Finished running node test.crm_dbt.unique_stg_stages_stage_id.7d330989f3
+[0m13:03:34.823562 [debug] [Thread-1 (]: Began running node test.crm_dbt.not_null_stg_users_email.2723c62e0e
+[0m13:03:34.823852 [info ] [Thread-1 (]: 16 of 18 START test not_null_stg_users_email ................................... [RUN]
+[0m13:03:34.824395 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.crm_dbt.unique_stg_stages_stage_id.7d330989f3, now test.crm_dbt.not_null_stg_users_email.2723c62e0e)
+[0m13:03:34.824740 [debug] [Thread-1 (]: Began compiling node test.crm_dbt.not_null_stg_users_email.2723c62e0e
+[0m13:03:34.829413 [debug] [Thread-1 (]: Writing injected SQL for node "test.crm_dbt.not_null_stg_users_email.2723c62e0e"
+[0m13:03:34.830748 [debug] [Thread-1 (]: Began executing node test.crm_dbt.not_null_stg_users_email.2723c62e0e
+[0m13:03:34.833043 [debug] [Thread-1 (]: Writing runtime sql for node "test.crm_dbt.not_null_stg_users_email.2723c62e0e"
+[0m13:03:34.834393 [debug] [Thread-1 (]: dbt_clickhouse adapter: On test.crm_dbt.not_null_stg_users_email.2723c62e0e: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "test.crm_dbt.not_null_stg_users_email.2723c62e0e"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select email
+from `crm_staging`.`stg_users`
+where email is null
+
+
+
+  
+  
+    ) dbt_internal_test...
+[0m13:03:34.896474 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:34.898361 [info ] [Thread-1 (]: 16 of 18 PASS not_null_stg_users_email ......................................... [[32mPASS[0m in 0.07s]
+[0m13:03:34.899018 [debug] [Thread-1 (]: Finished running node test.crm_dbt.not_null_stg_users_email.2723c62e0e
+[0m13:03:34.899403 [debug] [Thread-1 (]: Began running node test.crm_dbt.not_null_stg_users_user_id.980dfc1b77
+[0m13:03:34.899688 [info ] [Thread-1 (]: 17 of 18 START test not_null_stg_users_user_id ................................. [RUN]
+[0m13:03:34.899997 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.crm_dbt.not_null_stg_users_email.2723c62e0e, now test.crm_dbt.not_null_stg_users_user_id.980dfc1b77)
+[0m13:03:34.900264 [debug] [Thread-1 (]: Began compiling node test.crm_dbt.not_null_stg_users_user_id.980dfc1b77
+[0m13:03:34.903175 [debug] [Thread-1 (]: Writing injected SQL for node "test.crm_dbt.not_null_stg_users_user_id.980dfc1b77"
+[0m13:03:34.904193 [debug] [Thread-1 (]: Began executing node test.crm_dbt.not_null_stg_users_user_id.980dfc1b77
+[0m13:03:34.905634 [debug] [Thread-1 (]: Writing runtime sql for node "test.crm_dbt.not_null_stg_users_user_id.980dfc1b77"
+[0m13:03:34.906379 [debug] [Thread-1 (]: dbt_clickhouse adapter: On test.crm_dbt.not_null_stg_users_user_id.980dfc1b77: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "test.crm_dbt.not_null_stg_users_user_id.980dfc1b77"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select user_id
+from `crm_staging`.`stg_users`
+where user_id is null
+
+
+
+  
+  
+    ) dbt_internal_test...
+[0m13:03:34.967816 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:34.969858 [info ] [Thread-1 (]: 17 of 18 PASS not_null_stg_users_user_id ....................................... [[32mPASS[0m in 0.07s]
+[0m13:03:34.970519 [debug] [Thread-1 (]: Finished running node test.crm_dbt.not_null_stg_users_user_id.980dfc1b77
+[0m13:03:34.970881 [debug] [Thread-1 (]: Began running node test.crm_dbt.unique_stg_users_user_id.c2ff477e6b
+[0m13:03:34.971279 [info ] [Thread-1 (]: 18 of 18 START test unique_stg_users_user_id ................................... [RUN]
+[0m13:03:34.971655 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.crm_dbt.not_null_stg_users_user_id.980dfc1b77, now test.crm_dbt.unique_stg_users_user_id.c2ff477e6b)
+[0m13:03:34.971943 [debug] [Thread-1 (]: Began compiling node test.crm_dbt.unique_stg_users_user_id.c2ff477e6b
+[0m13:03:34.975379 [debug] [Thread-1 (]: Writing injected SQL for node "test.crm_dbt.unique_stg_users_user_id.c2ff477e6b"
+[0m13:03:34.976438 [debug] [Thread-1 (]: Began executing node test.crm_dbt.unique_stg_users_user_id.c2ff477e6b
+[0m13:03:34.978611 [debug] [Thread-1 (]: Writing runtime sql for node "test.crm_dbt.unique_stg_users_user_id.c2ff477e6b"
+[0m13:03:34.979673 [debug] [Thread-1 (]: dbt_clickhouse adapter: On test.crm_dbt.unique_stg_users_user_id.c2ff477e6b: /* {"app": "dbt", "dbt_version": "1.11.7", "profile_name": "crm_dbt", "target_name": "dev", "node_id": "test.crm_dbt.unique_stg_users_user_id.c2ff477e6b"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+select
+    user_id as unique_field,
+    count(*) as n_records
+
+from `crm_staging`.`stg_users`
+where user_id is not null
+group by user_id
+having count(*) > 1
+
+
+
+  
+  
+    ) dbt_internal_test...
+[0m13:03:35.042846 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.06 seconds
+[0m13:03:35.044991 [info ] [Thread-1 (]: 18 of 18 PASS unique_stg_users_user_id ......................................... [[32mPASS[0m in 0.07s]
+[0m13:03:35.045728 [debug] [Thread-1 (]: Finished running node test.crm_dbt.unique_stg_users_user_id.c2ff477e6b
+[0m13:03:35.047105 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m13:03:35.047410 [debug] [MainThread]: Connection 'list_' was left open.
+[0m13:03:35.047647 [debug] [MainThread]: On list_: Close
+[0m13:03:35.048728 [debug] [MainThread]: Connection 'list__crm_staging' was left open.
+[0m13:03:35.049023 [debug] [MainThread]: On list__crm_staging: Close
+[0m13:03:35.049894 [debug] [MainThread]: Connection 'test.crm_dbt.unique_stg_users_user_id.c2ff477e6b' was left open.
+[0m13:03:35.050150 [debug] [MainThread]: On test.crm_dbt.unique_stg_users_user_id.c2ff477e6b: Close
+[0m13:03:35.051084 [info ] [MainThread]: 
+[0m13:03:35.051380 [info ] [MainThread]: Finished running 12 data tests, 6 view models in 0 hours 0 minutes and 6.92 seconds (6.92s).
+[0m13:03:35.054103 [debug] [MainThread]: Command end result
+[0m13:03:35.077636 [debug] [MainThread]: Wrote artifact WritableManifest to C:\MyCodes\Python\CRM pipeline\dbt_project\target\manifest.json
+[0m13:03:35.081143 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\MyCodes\Python\CRM pipeline\dbt_project\target\semantic_manifest.json
+[0m13:03:35.089599 [debug] [MainThread]: Wrote artifact RunExecutionResult to C:\MyCodes\Python\CRM pipeline\dbt_project\target\run_results.json
+[0m13:03:35.089945 [info ] [MainThread]: 
+[0m13:03:35.090245 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m13:03:35.090518 [info ] [MainThread]: 
+[0m13:03:35.090788 [info ] [MainThread]: Done. PASS=18 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=18
+[0m13:03:35.091440 [debug] [MainThread]: Command `dbt build` succeeded at 13:03:35.091336 after 10.22 seconds
+[0m13:03:35.091731 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001711697F950>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000171197E3AD0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001711B09BE30>]}
+[0m13:03:35.092011 [debug] [MainThread]: Flushing usage events
+[0m13:03:36.319083 [debug] [MainThread]: An error was encountered while trying to flush usage events

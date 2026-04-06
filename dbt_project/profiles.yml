@@ -1,0 +1,12 @@
+crm_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: clickhouse
+      schema: crm
+      host: bognfyt333.germanywestcentral.azure.clickhouse.cloud
+      port: 8443
+      user: default
+      password: "yb1dBVPsos~3H"
+      secure: true
+      verify: false
